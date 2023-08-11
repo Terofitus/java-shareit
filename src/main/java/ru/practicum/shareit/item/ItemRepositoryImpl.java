@@ -29,8 +29,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> getAllItemsOfUser(int userId) {
-        List<Item> itemsFromRepository = items.values().stream().
-                filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
+        List<Item> itemsFromRepository = items.values().stream()
+                .filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
         log.info("Запрошены предметы пользователя с id={}.", userId);
         if (itemsFromRepository.isEmpty()) {
             throw new ItemNotFoundException(String.format("Не найдено предметов пользователя с id=%d.", userId));
@@ -55,8 +55,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void deleteAllItemsOfUser(int userId) {
-        items.values().stream().
-                filter(item -> item.getOwner().getId() == userId).map(Item::getId).forEach(items::remove);
+        items.values().stream()
+                .filter(item -> item.getOwner().getId() == userId).map(Item::getId).forEach(items::remove);
         log.info("Удалены все предметы пользователя с id={}.", userId);
     }
 
@@ -70,9 +70,9 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> searchItems(String text) {
         log.info("Запрошенны предметы, содержащие в названии или имени \"{}\".", text);
         String textLC = text.toLowerCase();
-        return items.values().stream().
-                filter(item -> item.getDescription().toLowerCase().contains(textLC) ||
-                        item.getName().toLowerCase().contains(textLC)).
-                filter(Item::getAvailable).collect(Collectors.toList());
+        return items.values().stream()
+                .filter(item -> item.getDescription().toLowerCase().contains(textLC) ||
+                        item.getName().toLowerCase().contains(textLC))
+                .filter(Item::getAvailable).collect(Collectors.toList());
     }
 }
