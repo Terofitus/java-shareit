@@ -17,6 +17,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final HashMap<Integer, User> users = new HashMap<>();
     private int generatedId = 1;
+
     @Override
     public List<User> getAllUsers() {
         log.info("Запрошены все пользователи.");
@@ -27,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserById(int id) {
         if (users.containsKey(id)) {
             log.info("Запрошен пользователь с id={}.", id);
-            return  users.get(id);
+            return users.get(id);
         } else {
             log.info("Запрошен пользователь с несуществующим id={}.", id);
             throw new UserNotFoundException(String.format("Пользователя с id=%d не найден.", id));
@@ -36,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User addUser(User user) {
-        if(isNotFreeEmail(user.getEmail())) {
+        if (isNotFreeEmail(user.getEmail())) {
             log.info("Попытка добавить пользователя с занятым email={}.", user.getEmail());
             throw new UserAlreadyExistException(String.format("Данный email=%s уже занят.", user.getEmail()));
         } else {
@@ -52,19 +53,19 @@ public class UserRepositoryImpl implements UserRepository {
         String name = user.getName();
         String email = user.getEmail();
         User userFromRepository = users.get(user.getId());
-        if(userFromRepository == null) {
+        if (userFromRepository == null) {
             log.info("Попытка обновить пользователя с несуществующим id={}", user.getId());
             throw new UserNotFoundException(String.format("Пользователя с id=%d не найден.", user.getId()));
         }
 
-        if(name != null) {
+        if (name != null) {
             userFromRepository.setName(name);
         }
 
-        if(email != null) {
-            if(users.values().stream().
-                    filter(u -> u.getId() != user.getId()).
-                    anyMatch(u -> u.getEmail().equals(email))) {
+        if (email != null) {
+            if (users.values().stream()
+                    .filter(u -> u.getId() != user.getId())
+                    .anyMatch(u -> u.getEmail().equals(email))) {
                 throw new EmailAlreadyTakenException(String.format("Email=%s уже занят.", email));
             }
             userFromRepository.setEmail(email);

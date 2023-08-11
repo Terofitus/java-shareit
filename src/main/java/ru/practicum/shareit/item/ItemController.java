@@ -37,7 +37,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam(required = false) String text) {
-        if(text.isEmpty()) return new ArrayList<>();
+        if (text.isEmpty()) return new ArrayList<>();
         List<Item> items = itemService.searchItems(text);
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
@@ -49,9 +49,9 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@PathVariable(name="id") Integer itemId,
+    public ItemDto updateItem(@PathVariable(name = "id") Integer itemId,
                               @RequestHeader("X-Sharer-User-Id") Integer userId,
-                              @RequestBody Map<String,Object> dataOfItem) {
+                              @RequestBody Map<String, Object> dataOfItem) {
         Item item = ItemMapper.toItemFromMap(itemId, dataOfItem);
         return ItemMapper.toItemDto(itemService.updateItem(item, userId));
     }
@@ -63,7 +63,7 @@ public class ItemController {
 
     @DeleteMapping("/{id}")
     public void deleteItemById(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                               @PathVariable(name="id") Integer itemId) {
+                               @PathVariable(name = "id") Integer itemId) {
         itemService.deleteItemById(userId, itemId);
     }
 }

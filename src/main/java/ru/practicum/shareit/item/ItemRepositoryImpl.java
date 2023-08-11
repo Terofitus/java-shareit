@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final HashMap<Integer,Item> items = new HashMap<>();
+    private final HashMap<Integer, Item> items = new HashMap<>();
     private int generatedId = 1;
 
     @Override
     public Item getItemById(int id) {
         Item item = items.get(id);
-        if(item == null) {
+        if (item == null) {
             log.info("Запрошен недобавленный предмет с id={}.", id);
             throw new ItemNotFoundException(String.format("Нет предмета с id=%d.", id));
         }
@@ -32,7 +32,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         List<Item> itemsFromRepository = items.values().stream().
                 filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
         log.info("Запрошены предметы пользователя с id={}.", userId);
-        if(itemsFromRepository.isEmpty()) {
+        if (itemsFromRepository.isEmpty()) {
             throw new ItemNotFoundException(String.format("Не найдено предметов пользователя с id=%d.", userId));
         }
         return itemsFromRepository;

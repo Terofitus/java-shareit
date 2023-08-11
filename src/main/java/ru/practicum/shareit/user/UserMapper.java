@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class UserMapper {
         );
     }
 
-    public static User toUserFromMap(Integer id, Map<String,Object> dataOfUser) {
+    public static User toUserFromMap(Integer id, Map<String, Object> dataOfUser) {
         return new User(id,
                 (String) dataOfUser.get("name"),
                 (String) dataOfUser.get("email"));

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.exception.NoAccessRightsException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -43,13 +43,13 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.getUserById(userId);
         checkingAccessRights(itemFromRepository, user);
 
-        if(item.getName() != null) {
+        if (item.getName() != null) {
             itemFromRepository.setName(item.getName());
         }
-        if(item.getDescription() != null) {
+        if (item.getDescription() != null) {
             itemFromRepository.setDescription(item.getDescription());
         }
-        if(item.getAvailable() != null) {
+        if (item.getAvailable() != null) {
             itemFromRepository.setAvailable(item.getAvailable());
         }
         itemRepository.updateItem(itemFromRepository);
@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkingAccessRights(Item item, User user) {
-        if(user.getId() != item.getOwner().getId()) {
+        if (user.getId() != item.getOwner().getId()) {
             throw new NoAccessRightsException("Только владелец может изменять предмет.");
         }
     }

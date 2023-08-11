@@ -26,11 +26,11 @@ public class ItemMapper {
         );
     }
 
-    public static Item toItemFromMap(Integer id, Map<String,Object> dataOfItem) {
+    public static Item toItemFromMap(Integer id, Map<String, Object> dataOfItem) {
         String name = (String) dataOfItem.get("name");
         String description = (String) dataOfItem.get("description");
         Boolean available;
-        if(dataOfItem.get("available") == null) {
+        if (dataOfItem.get("available") == null) {
             available = null;
         } else {
             available = (Boolean) dataOfItem.get("available");
