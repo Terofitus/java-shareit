@@ -37,12 +37,12 @@ public class ErrorHandler {
     public ErrorResponse handleValidationException(final UserNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
-/*
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleValidationException(final Throwable e) {
         return new ErrorResponse(e.getMessage());
-    }*/
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

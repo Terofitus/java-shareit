@@ -1,7 +1,9 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.contoroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.util.ItemMapper;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -11,9 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -36,9 +35,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam(required = false) String text) {
+    public List<ItemDto> searchItemsByDescription(@RequestParam(required = false) String text) {
         if (text.isEmpty()) return new ArrayList<>();
-        List<Item> items = itemService.searchItems(text);
+        List<Item> items = itemService.searchItemsByDescription(text);
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 

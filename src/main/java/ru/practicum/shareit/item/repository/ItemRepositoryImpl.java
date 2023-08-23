@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -54,7 +54,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public void deleteAllItemsOfUser(int userId) {
+    public void deleteAllItemsOfUserById(int userId) {
         items.values().stream()
                 .filter(item -> item.getOwner().getId() == userId).map(Item::getId).forEach(items::remove);
         log.info("Удалены все предметы пользователя с id={}.", userId);
@@ -67,7 +67,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> searchItems(String text) {
+    public List<Item> searchItemsByDescription(String text) {
         log.info("Запрошенны предметы, содержащие в названии или имени \"{}\".", text);
         String textLC = text.toLowerCase();
         return items.values().stream()

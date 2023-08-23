@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.model.Item;
 
@@ -17,5 +17,5 @@ public interface ItemService {
 
     void deleteItemById(int userId, int itemId);
 
-    List<Item> searchItems(String text);
+    List<Item> searchItemsByDescription(String text);
 }

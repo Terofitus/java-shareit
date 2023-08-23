@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.repository;
 
 import ru.practicum.shareit.item.model.Item;
 
@@ -13,9 +13,9 @@ public interface ItemRepository {
 
     Item updateItem(Item item);
 
-    void deleteAllItemsOfUser(int userId);
+    void deleteAllItemsOfUserById(int userId);
 
     void deleteItemById(int itemId);
 
-    List<Item> searchItems(String text);
+    List<Item> searchItemsByDescription(String text);
 }
