@@ -1,15 +1,15 @@
 package ru.practicum.shareit.item.util;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Map;
 
-public final class ItemMapper {
-    private ItemMapper() {
-    }
+@UtilityClass
+public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public ItemDto toItemDto(Item item) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
@@ -18,7 +18,7 @@ public final class ItemMapper {
         );
     }
 
-    public static Item toItem(ItemDto itemDto) {
+    public Item toItem(ItemDto itemDto) {
         return new Item(
                 itemDto.getId(),
                 itemDto.getName(),
@@ -29,7 +29,7 @@ public final class ItemMapper {
         );
     }
 
-    public static Item toItemFromMap(Integer id, Map<String, Object> dataOfItem) {
+    public Item toItemFromMap(Integer id, Map<String, Object> dataOfItem) {
         String name = (String) dataOfItem.get("name");
         String description = (String) dataOfItem.get("description");
         Boolean available;

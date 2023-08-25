@@ -1,15 +1,15 @@
 package ru.practicum.shareit.user.util;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Map;
 
-public final class UserMapper {
-    private UserMapper() {
-    }
+@UtilityClass
+public class UserMapper {
 
-    public static UserDto toUserDto(User user) {
+    public UserDto toUserDto(User user) {
         return new UserDto(
                 user.getId(),
                 user.getName(),
@@ -17,7 +17,7 @@ public final class UserMapper {
         );
     }
 
-    public static User toUser(UserDto userDto) {
+    public User toUser(UserDto userDto) {
         return new User(
                 userDto.getId(),
                 userDto.getName(),
@@ -25,7 +25,7 @@ public final class UserMapper {
         );
     }
 
-    public static User toUserFromMap(Integer id, Map<String, Object> dataOfUser) {
+    public User toUserFromMap(Integer id, Map<String, Object> dataOfUser) {
         return new User(id,
                 (String) dataOfUser.get("name"),
                 (String) dataOfUser.get("email"));
