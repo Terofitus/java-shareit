@@ -6,14 +6,14 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.stream.Stream;
 
-@Converter(autoApply = true)
+@Converter
 public class BookingStatusConverter implements AttributeConverter<BookingStatus,String> {
     @Override
     public String convertToDatabaseColumn(BookingStatus bookingStatus) {
         if (bookingStatus == null) {
             return null;
         }
-        return bookingStatus.getMessage();
+        return bookingStatus.name();
     }
 
     @Override
@@ -21,7 +21,7 @@ public class BookingStatusConverter implements AttributeConverter<BookingStatus,
         if (s == null) return null;
 
         return Stream.of(BookingStatus.values())
-                .filter(status -> status.getMessage().equals(s))
+                .filter(status -> status.name().equalsIgnoreCase(s))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

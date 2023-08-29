@@ -1,83 +1,102 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.exception.NoAccessRightsException;
+import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.exception.NoAccessRightsException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService) {
         this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
     public Item getItemById(int id) {
-        return itemRepository.getItemById(id);
+        Optional<Item> item = itemRepository.findById(id);
+        if (item.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Предмет с id=%d не найден", id));
+        }
+        log.info("Запрошен предмет с id={}", id);
+        return item.get();
     }
 
     @Override
     public List<Item> getAllItemsOfUser(int userId) {
-        return itemRepository.getAllItemsOfUser(userId);
+        User user = userService.getUserById(userId);
+        log.info("Запрошенны все предметы пользователя с id={}", userId);
+        return itemRepository.findAllByOwner(user);
     }
 
     @Override
     public Item addItem(int userId, Item item) {
-        User owner = userRepository.getUserById(userId);
+        User owner = userService.getUserById(userId);
         item.setOwner(owner);
-        return itemRepository.addItem(item);
+        item = itemRepository.save(item);
+        log.info("Добавлен предмет с id={}", item.getId());
+        return item;
     }
 
     @Override
     public Item updateItem(Item item, int userId) {
-        Item itemFromRepository = itemRepository.getItemById(item.getId());
-        User user = userRepository.getUserById(userId);
-        checkingAccessRightsUserToItem(itemFromRepository, user);
-
-        if (item.getName() != null) {
-            itemFromRepository.setName(item.getName());
-        }
-        if (item.getDescription() != null) {
-            itemFromRepository.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            itemFromRepository.setAvailable(item.getAvailable());
-        }
-        itemRepository.updateItem(itemFromRepository);
-        return itemFromRepository;
+        Item itemFromDb = getItemById(item.getId());
+        User user = userService.getUserById(userId);
+        checkingAccessRightsOfUserToItem(itemFromDb, user);
+        prepareItemForUpdate(item, itemFromDb);
+        itemFromDb = itemRepository.save(itemFromDb);
+        log.info("Предмет с id={} был обновлен", itemFromDb.getId());
+        return itemFromDb;
     }
 
     @Override
-    public void deleteAllItemsOfUser(int userId) {
-        itemRepository.deleteAllItemsOfUserById(userId);
+    public void deleteAllItemsByUserId(int userId) {
+        itemRepository.deleteAllByOwnerId(userId);
+        log.info("Удалены все предметы пользователя с id={}",userId);
     }
 
     @Override
     public void deleteItemById(int userId, int itemId) {
-        Item item = itemRepository.getItemById(itemId);
-        User user = userRepository.getUserById(userId);
-        checkingAccessRightsUserToItem(item, user);
-        itemRepository.deleteItemById(itemId);
-    }
-
-    private void checkingAccessRightsUserToItem(Item item, User user) {
-        if (user.getId() != item.getOwner().getId()) {
-            throw new NoAccessRightsException("Только владелец может изменять предмет.");
-        }
+        Item item = getItemById(itemId);
+        User user = userService.getUserById(userId);
+        checkingAccessRightsOfUserToItem(item, user);
+        itemRepository.deleteById(itemId);
+        log.info("Предмет с id={} был удален",itemId);
     }
 
     @Override
     public List<Item> searchItemsByDescription(String text) {
-        return itemRepository.searchItemsByDescription(text);
+        return itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text);
+    }
+
+    private void checkingAccessRightsOfUserToItem(Item item, User user) {
+        if (user.getId() != item.getOwner().getId()) {
+            throw new NoAccessRightsException("Только владелец может изменять предмет");
+        }
+    }
+
+    private void prepareItemForUpdate(Item itemForUpdate, Item itemFromDb) {
+        if (itemForUpdate.getName() != null) {
+            itemFromDb.setName(itemForUpdate.getName());
+        }
+        if (itemForUpdate.getDescription() != null) {
+            itemFromDb.setDescription(itemForUpdate.getDescription());
+        }
+        if (itemForUpdate.getAvailable() != null) {
+            itemFromDb.setAvailable(itemForUpdate.getAvailable());
+        }
     }
 }

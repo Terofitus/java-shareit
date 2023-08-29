@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.exception;
+package ru.practicum.shareit.exception;
 
 public class EmailAlreadyTakenException extends RuntimeException {
     public EmailAlreadyTakenException(String message) {

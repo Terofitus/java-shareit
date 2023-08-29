@@ -57,7 +57,7 @@ public class ItemController {
 
     @DeleteMapping
     public void deleteAllItemsOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        itemService.deleteAllItemsOfUser(userId);
+        itemService.deleteAllItemsByUserId(userId);
     }
 
     @DeleteMapping("/{id}")

@@ -5,24 +5,32 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.ErrorResponse;
-import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.NoAccessRightsException;
-import ru.practicum.shareit.user.exception.EmailAlreadyTakenException;
-import ru.practicum.shareit.user.exception.UserAlreadyExistException;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
+import ru.practicum.shareit.exception.*;
 
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler({UserAlreadyExistException.class, EmailAlreadyTakenException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleValidationException(final RuntimeException e) {
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handleValidationException(final IllegalArgumentException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final ItemNotAvailableException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleValidationException(final EmailAlreadyTakenException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -39,10 +47,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleValidationException(final Throwable e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleValidationException(final BookingNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -50,4 +59,9 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleValidationException(final Throwable e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

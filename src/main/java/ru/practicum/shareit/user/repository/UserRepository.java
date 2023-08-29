@@ -1,20 +1,10 @@
 package ru.practicum.shareit.user.repository;
 
 
+import org.springframework.data.repository.CrudRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface UserRepository {
-    List<User> getAllUsers();
-
-    User getUserById(int id);
-
-    User addUser(User user);
-
-    User updateUser(User user);
-
-    void deleteAllUsers();
-
-    void deleteUser(int id);
+public interface UserRepository extends CrudRepository<User,Integer> {
 }

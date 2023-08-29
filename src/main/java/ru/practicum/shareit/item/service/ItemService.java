@@ -13,7 +13,7 @@ public interface ItemService {
 
     Item updateItem(Item item, int userId);
 
-    void deleteAllItemsOfUser(int userId);
+    void deleteAllItemsByUserId(int userId);
 
     void deleteItemById(int userId, int itemId);
 
