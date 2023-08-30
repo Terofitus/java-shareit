@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends CrudRepository<Booking,Integer> {
+
     List<Booking> getAllBookingsByItemOwnerIdOrderByStartDesc(int userId);
 
     @Query("select b from Booking b where b.item.owner.id=?1 and b.start<?2 and b.end>?2 order by b.start desc")

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.contoroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.util.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -24,27 +25,28 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable Integer id) {
-        return ItemMapper.toItemDto(itemService.getItemById(id));
+    public ItemDto getItemById(@PathVariable Integer id,
+                               @RequestHeader(name = "X-Sharer-User-Id", required = false) Integer userId) {
+        return itemService.getItemDtoById(id, userId);
     }
 
     @GetMapping
     public List<ItemDto> getAllItemsOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        List<Item> items = itemService.getAllItemsOfUser(userId);
-        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemService.getAllItemsOfUser(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItemsByDescription(@RequestParam(required = false) String text) {
         if (text.isEmpty()) return new ArrayList<>();
         List<Item> items = itemService.searchItemsByDescription(text);
-        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return items.stream().map(ItemMapper::toItemDtoWithoutBooking).collect(Collectors.toList());
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                           @Valid @RequestBody ItemDtoWithoutBooking itemDto) {
         Item item = ItemMapper.toItem(itemDto);
-        return ItemMapper.toItemDto(itemService.addItem(userId, item));
+        return ItemMapper.toItemDtoWithoutBooking(itemService.addItem(userId, item));
     }
 
     @PatchMapping("/{id}")
@@ -52,7 +54,7 @@ public class ItemController {
                               @RequestHeader("X-Sharer-User-Id") Integer userId,
                               @RequestBody Map<String, Object> dataOfItem) {
         Item item = ItemMapper.toItemFromMap(itemId, dataOfItem);
-        return ItemMapper.toItemDto(itemService.updateItem(item, userId));
+        return ItemMapper.toItemDtoWithoutBooking(itemService.updateItem(item, userId));
     }
 
     @DeleteMapping

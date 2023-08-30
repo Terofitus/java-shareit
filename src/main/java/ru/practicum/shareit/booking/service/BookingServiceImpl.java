@@ -10,7 +10,6 @@ import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ItemNotFoundException;
-import ru.practicum.shareit.exception.NoAccessRightsException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
@@ -116,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking addBooking(BookingDtoForCreateUpdate bookingDtoForCreateUpdate, int userId) {
         User user = userService.getUserById(userId);
-        Item item = itemService.getItemById(bookingDtoForCreateUpdate.getItemId());
+        Item item = itemService.getItemById(bookingDtoForCreateUpdate.getItemId(), Integer.valueOf(userId));
         if (Objects.equals(item.getOwner().getId(), user.getId())) {
             throw new ItemNotFoundException("Нельзя создать бронирование на собственную вещь.");
         }

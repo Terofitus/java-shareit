@@ -3,43 +3,80 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.repository.BookingRepositoryForCustomMethod;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.NoAccessRightsException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.util.ItemMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final BookingRepository bookingRepository;
+    private final BookingRepositoryForCustomMethod bRForCustomMethod;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserService userService) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService,
+                           BookingRepository bookingRepository, BookingRepositoryForCustomMethod bRForCustomMethod) {
         this.itemRepository = itemRepository;
         this.userService = userService;
+        this.bookingRepository = bookingRepository;
+        this.bRForCustomMethod = bRForCustomMethod;
     }
 
     @Override
-    public Item getItemById(int id) {
+    public ItemDto getItemDtoById(int id, Integer userId) {
         Optional<Item> item = itemRepository.findById(id);
         if (item.isEmpty()) {
             throw new ItemNotFoundException(String.format("Предмет с id=%d не найден", id));
         }
+        Item itemFromDb = item.get();
+        BookingShortDto nextBooking = null;
+        BookingShortDto lastBooking = null;
+        if (userId != null && item.get().getOwner().getId() == userId) {
+            nextBooking = bRForCustomMethod.getNextBooking(id);
+            lastBooking = bRForCustomMethod.getLastBooking(id);
+
+        }
         log.info("Запрошен предмет с id={}", id);
-        return item.get();
+        return ItemMapper.toItemDtoWithBooking(item.get(), nextBooking, lastBooking);
     }
 
     @Override
-    public List<Item> getAllItemsOfUser(int userId) {
+    public Item getItemById(int id, Integer userId) {
+        Optional<Item> item = itemRepository.findById(id);
+        if (item.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Предмет с id=%d не найден", id));
+        }
+        Item itemFromDb = item.get();
+
+        log.info("Запрошен предмет с id={}", id);
+        return itemFromDb;
+    }
+
+    @Override
+    public List<ItemDto> getAllItemsOfUser(int userId) {
         User user = userService.getUserById(userId);
         log.info("Запрошенны все предметы пользователя с id={}", userId);
-        return itemRepository.findAllByOwner(user);
+
+        List<Item> items = itemRepository.findAllByOwner(user);
+        return items.stream().map(item -> {
+            BookingShortDto nextBooking = bRForCustomMethod.getNextBooking(item.getId());
+            BookingShortDto lastBooking = bRForCustomMethod.getLastBooking(item.getId());
+            return ItemMapper.toItemDtoWithBooking(item, nextBooking, lastBooking);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -53,8 +90,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(Item item, int userId) {
-        Item itemFromDb = getItemById(item.getId());
+        Optional<Item> itemFromDbOpt = itemRepository.findById(item.getId());
         User user = userService.getUserById(userId);
+        if (itemFromDbOpt.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Предмет с id=%d не найден", item.getId()));
+        }
+        Item itemFromDb = itemFromDbOpt.get();
         checkingAccessRightsOfUserToItem(itemFromDb, user);
         prepareItemForUpdate(item, itemFromDb);
         itemFromDb = itemRepository.save(itemFromDb);
@@ -70,9 +111,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItemById(int userId, int itemId) {
-        Item item = getItemById(itemId);
+        Optional<Item> itemFromDbOpt = itemRepository.findById(itemId);
         User user = userService.getUserById(userId);
-        checkingAccessRightsOfUserToItem(item, user);
+        if (itemFromDbOpt.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Предмет с id=%d не найден", itemId));
+        }
+        Item itemFromDb = itemFromDbOpt.get();
+        checkingAccessRightsOfUserToItem(itemFromDb, user);
         itemRepository.deleteById(itemId);
         log.info("Предмет с id={} был удален",itemId);
     }

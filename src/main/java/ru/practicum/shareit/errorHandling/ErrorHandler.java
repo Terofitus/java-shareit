@@ -62,6 +62,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleValidationException(final Throwable e) {
+        e.printStackTrace();
         return new ErrorResponse(e.getMessage());
     }
 }
