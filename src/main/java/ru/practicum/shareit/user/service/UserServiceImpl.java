@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.EmailAlreadyTakenException;
 import ru.practicum.shareit.exception.UserNotFoundException;
@@ -24,12 +25,14 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         log.info("Запрошены все пользователи");
         return (List<User>) userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User getUserById(int id) {
         Optional<User> user = userRepository.findById(id);
@@ -40,9 +43,10 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
+    @Transactional
     @Override
     public User addUser(User user) {
-        User userFromDb = null;
+        User userFromDb;
         try {
             userFromDb = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
@@ -52,7 +56,7 @@ public class UserServiceImpl implements UserService {
         return userFromDb;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
     public User updateUser(final User user) {
         User userFromDb = getUserById(user.getId());

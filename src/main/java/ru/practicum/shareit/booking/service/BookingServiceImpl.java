@@ -3,12 +3,14 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.util.BookingMapper;
 import ru.practicum.shareit.exception.BookingNotFoundException;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -34,6 +36,7 @@ public class BookingServiceImpl implements BookingService {
         this.userService = userService;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Booking getBookingByOwnerOrBookerId(int bookingId, int ownerId) {
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
@@ -41,7 +44,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException(String.format("Бронирование с id=%d не найдено.", bookingId));
         }
         Booking booking = optionalBooking.get();
-        if (!(booking.getBooker().getId()==ownerId || booking.getItem().getOwner().getId()==ownerId)) {
+        if (!(booking.getBooker().getId() == ownerId || booking.getItem().getOwner().getId() == ownerId)) {
             throw new BookingNotFoundException(String.format("Бронирование с id=%d не найдено.", bookingId));
         }
         log.info("Запрошено бронирование с id={} от лица user с id={}", bookingId, ownerId);
@@ -50,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookingsByUserIdAndState(int userId, String state) {
-        List<Booking> bookings = null;
+        List<Booking> bookings;
         switch (state.toUpperCase()) {
             case "ALL":
                 bookings = bookingRepository.getAllBookingsByBookerIdOrderByStartDesc(userId);
@@ -82,11 +85,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state) {
-        List<Booking> bookings = null;
+        List<Booking> bookings;
         switch (state.toUpperCase()) {
             case "ALL":
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdOrderByStartDesc(userId);
-            break;
+                break;
             case "CURRENT":
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now());
                 break;
@@ -112,10 +115,11 @@ public class BookingServiceImpl implements BookingService {
         return bookings;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
     public Booking addBooking(BookingDtoForCreateUpdate bookingDtoForCreateUpdate, int userId) {
         User user = userService.getUserById(userId);
-        Item item = itemService.getItemById(bookingDtoForCreateUpdate.getItemId(), Integer.valueOf(userId));
+        Item item = itemService.getItemById(bookingDtoForCreateUpdate.getItemId());
         if (Objects.equals(item.getOwner().getId(), user.getId())) {
             throw new ItemNotFoundException("Нельзя создать бронирование на собственную вещь.");
         }
@@ -125,18 +129,19 @@ public class BookingServiceImpl implements BookingService {
         return bookingFromDb;
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
     public Booking updateBooking(Booking booking, boolean approved, int userId) {
         if (booking.getItem().getOwner().getId() != userId) {
             log.info("Попытка изменения статуса чужого бронирования с id={} от user id={}", booking.getId(), userId);
             throw new BookingNotFoundException(String.format("Бронирование с id=%d не найдено.", booking.getId()));
         }
-        if(!booking.getStatus().equals(BookingStatus.WAITING)) {
+        if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             log.info("Попытка изменения статуса бронирования с id={}, отличного от \"WAITING\"", booking.getId());
             throw new IllegalArgumentException("Статус бронирования можно изменить" +
                     " только у бронирования со статусом \"WAITING\".");
         }
-        if(approved) {
+        if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
             booking.setStatus(BookingStatus.REJECTED);

@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface ItemRepository extends CrudRepository<Item,Integer> {
+public interface ItemRepository extends CrudRepository<Item, Integer> {
     @Query("select i from Item i where i.available=true and (lower(i.name) like lower(concat('%', :text, '%'))" +
             " or lower(i.description) like lower(concat('%', :text, '%')))")
     List<Item> findAllByNameOrDescriptionContainsIgnoreCase(String text);

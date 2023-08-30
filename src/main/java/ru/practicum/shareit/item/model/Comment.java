@@ -20,7 +20,7 @@ public class Comment {
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private User author;
     private LocalDateTime created;
 }

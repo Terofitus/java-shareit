@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface BookingRepository extends CrudRepository<Booking,Integer> {
+public interface BookingRepository extends CrudRepository<Booking, Integer> {
 
     List<Booking> getAllBookingsByItemOwnerIdOrderByStartDesc(int userId);
 
@@ -44,6 +44,7 @@ public interface BookingRepository extends CrudRepository<Booking,Integer> {
     List<Booking> getAllBookingsByBookerIdRejected(int userId);
 
     void deleteAllByBookerId(int ownerId);
+
     @Query("delete from Booking b where b.id=?1 and b.item.owner.id=?2")
     void deleteBookingById(int bookingId, int ownerId);
 }

@@ -7,7 +7,7 @@ import javax.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter
-public class BookingStatusConverter implements AttributeConverter<BookingStatus,String> {
+public class BookingStatusConverter implements AttributeConverter<BookingStatus, String> {
     @Override
     public String convertToDatabaseColumn(BookingStatus bookingStatus) {
         if (bookingStatus == null) {

@@ -1,10 +1,11 @@
 package ru.practicum.shareit.booking.contoroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDtoForGet;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
+import ru.practicum.shareit.booking.dto.BookingDtoForGet;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.util.BookingMapper;
@@ -54,6 +55,7 @@ public class BookingController {
         return BookingMapper.toBookingDtoForGet(bookingService.addBooking(bookingDtoForCreateUpdate, userId));
     }
 
+    @Transactional
     @PatchMapping("/{bookingId}")
     public BookingDtoForGet updateBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                           @PathVariable Integer bookingId,
@@ -64,7 +66,7 @@ public class BookingController {
 
     @DeleteMapping("/{bookingId}")
     public void deleteBookingById(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                          @PathVariable Integer bookingId) {
+                                  @PathVariable Integer bookingId) {
         bookingService.deleteBookingById(bookingId, userId);
     }
 
