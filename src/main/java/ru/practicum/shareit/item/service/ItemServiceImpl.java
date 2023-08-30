@@ -21,6 +21,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         BookingShortDto nextBooking = null;
         BookingShortDto lastBooking = null;
         List<Comment> comments = commentRepository.findAllByItemId(itemFromDb.getId());
-        if (userId != null && item.get().getOwner().getId() == userId) {
+        if (userId != null && Objects.equals(item.get().getOwner().getId(), userId)) {
             nextBooking = bRForCustomMethod.getNextBooking(id);
             lastBooking = bRForCustomMethod.getLastBooking(id);
         }
@@ -156,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void checkingAccessRightsOfUserToItem(Item item, User user) {
-        if (user.getId() != item.getOwner().getId()) {
+        if (!Objects.equals(user.getId(), item.getOwner().getId())) {
             throw new NoAccessRightsException("Только владелец может изменять предмет");
         }
     }
