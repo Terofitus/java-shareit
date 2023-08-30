@@ -41,8 +41,8 @@ public class ItemController {
     public List<ItemDto> searchItemsByDescription(@RequestParam(required = false) String text) {
         if (text.isEmpty()) return new ArrayList<>();
         List<Item> items = itemService.searchItemsByDescription(text);
-        return items.stream().map((Item item) -> ItemMapper.toItemDtoWithoutBooking(item, null)).
-                collect(Collectors.toList());
+        return items.stream().map((Item item) -> ItemMapper.toItemDtoWithoutBooking(item, null))
+                        .collect(Collectors.toList());
     }
 
     @PostMapping
