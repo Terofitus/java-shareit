@@ -1,12 +1,15 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.util.BookingMapper;
@@ -24,17 +27,11 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemService itemService;
     private final UserService userService;
-
-    @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, ItemService itemService, UserService userService) {
-        this.bookingRepository = bookingRepository;
-        this.itemService = itemService;
-        this.userService = userService;
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -54,24 +51,30 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getAllBookingsByUserIdAndState(int userId, String state) {
         List<Booking> bookings;
-        switch (state.toUpperCase()) {
-            case "ALL":
-                bookings = bookingRepository.getAllBookingsByBookerIdOrderByStartDesc(userId);
+        BookingState bookingState;
+        try {
+            bookingState = BookingState.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            bookingState = BookingState.UNKNOWN;
+        }
+        switch (bookingState) {
+            case ALL:
+                bookings = bookingRepository.getAllBookingsByBookerId(userId, Sort.by("start").descending());
                 break;
-            case "CURRENT":
+            case CURRENT:
                 bookings = bookingRepository.getAllBookingsByBookerIdCurrent(userId, LocalDateTime.now());
                 break;
-            case "PAST":
+            case PAST:
                 bookings = bookingRepository.getAllBookingsByBookerIdPast(userId, LocalDateTime.now());
                 break;
-            case "FUTURE":
+            case FUTURE:
                 bookings = bookingRepository.getAllBookingsByBookerIdFuture(userId, LocalDateTime.now());
                 break;
-            case "WAITING":
-                bookings = bookingRepository.getAllBookingsByBookerIdWaiting(userId);
+            case WAITING:
+                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.WAITING);
                 break;
-            case "REJECTED":
-                bookings = bookingRepository.getAllBookingsByBookerIdRejected(userId);
+            case REJECTED:
+                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.REJECTED);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
@@ -86,24 +89,31 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state) {
         List<Booking> bookings;
-        switch (state.toUpperCase()) {
-            case "ALL":
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdOrderByStartDesc(userId);
+        BookingState bookingState;
+        try {
+            bookingState = BookingState.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            bookingState = BookingState.UNKNOWN;
+        }
+        switch (bookingState) {
+            case ALL:
+                bookings = bookingRepository.getAllBookingsByItemOwnerId(userId,
+                        Sort.by("start").descending());
                 break;
-            case "CURRENT":
+            case CURRENT:
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now());
                 break;
-            case "PAST":
+            case PAST:
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdPast(userId, LocalDateTime.now());
                 break;
-            case "FUTURE":
+            case FUTURE:
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdFuture(userId, LocalDateTime.now());
                 break;
-            case "WAITING":
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdWaiting(userId);
+            case WAITING:
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.WAITING);
                 break;
-            case "REJECTED":
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdRejected(userId);
+            case REJECTED:
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.REJECTED);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");

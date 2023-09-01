@@ -1,4 +1,4 @@
-package ru.practicum.shareit.errorHandling;
+package ru.practicum.shareit.error_handling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;

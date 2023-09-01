@@ -1,5 +1,6 @@
-package ru.practicum.shareit.item.contoroller;
+package ru.practicum.shareit.item.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDtoForCreate;
@@ -18,13 +19,9 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ItemController {
     private final ItemService itemService;
-
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     @GetMapping("/{id}")
     public ItemDto getItemById(@PathVariable Integer id,
@@ -42,7 +39,7 @@ public class ItemController {
         if (text.isEmpty()) return new ArrayList<>();
         List<Item> items = itemService.searchItemsByDescription(text);
         return items.stream().map((Item item) -> ItemMapper.toItemDtoWithoutBooking(item, null))
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @PostMapping

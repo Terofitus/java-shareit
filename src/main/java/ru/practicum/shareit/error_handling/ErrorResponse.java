@@ -1,4 +1,4 @@
-package ru.practicum.shareit.errorHandling;
+package ru.practicum.shareit.error_handling;
 
 public class ErrorResponse {
     private final String error;

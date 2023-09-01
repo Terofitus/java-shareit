@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,20 +28,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepositoryForCustomMethod bRForCustomMethod;
     private final CommentRepository commentRepository;
-
-    @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserService userService,
-                           BookingRepositoryForCustomMethod bRForCustomMethod, CommentRepository commentRepository) {
-        this.itemRepository = itemRepository;
-        this.userService = userService;
-        this.bRForCustomMethod = bRForCustomMethod;
-        this.commentRepository = commentRepository;
-    }
 
     @Transactional(readOnly = true)
     @Override

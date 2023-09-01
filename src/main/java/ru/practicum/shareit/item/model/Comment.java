@@ -17,10 +17,12 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User author;
-    private LocalDateTime created;
+    @Column(nullable = false)
+    private LocalDateTime created = LocalDateTime.now();
 }

@@ -1,5 +1,6 @@
-package ru.practicum.shareit.booking.contoroller;
+package ru.practicum.shareit.booking.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -16,14 +17,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/bookings")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BookingController {
 
     private final BookingService bookingService;
-
-    @Autowired
-    public BookingController(BookingService bookingService) {
-        this.bookingService = bookingService;
-    }
 
     @GetMapping("/{bookingId}")
     public BookingDtoForGet getBookingById(@PathVariable Integer bookingId,

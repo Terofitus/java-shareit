@@ -17,11 +17,13 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false, length = 40)
     private String name;
+    @Column(nullable = false, length = 200)
     private String description;
-    @Column(name = "is_available")
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
     @OneToOne(fetch = FetchType.LAZY)
     private ItemRequest request;
