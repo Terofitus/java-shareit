@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
+@EqualsAndHashCode(exclude = {"id", "author", "created"})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
