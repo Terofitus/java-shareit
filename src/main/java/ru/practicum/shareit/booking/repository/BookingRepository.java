@@ -15,31 +15,31 @@ public interface BookingRepository extends CrudRepository<Booking, Integer>,
 
     List<Booking> getAllBookingsByItemOwnerId(int userId, Sort sort);
 
-    @Query("select b from Booking b where b.item.owner.id=?1 and b.start<?2 and b.end>?2 order by b.start desc")
-    List<Booking> getAllBookingsByItemOwnerIdCurrent(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.item.owner.id=?1 and b.start<?2 and b.end>?2")
+    List<Booking> getAllBookingsByItemOwnerIdCurrent(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.item.owner.id=?1 and b.end<?2 order by b.start desc")
-    List<Booking> getAllBookingsByItemOwnerIdPast(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.item.owner.id=?1 and b.end<?2")
+    List<Booking> getAllBookingsByItemOwnerIdPast(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.item.owner.id=?1 and b.start>?2 order by b.start desc")
-    List<Booking> getAllBookingsByItemOwnerIdFuture(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.item.owner.id=?1 and b.start>?2")
+    List<Booking> getAllBookingsByItemOwnerIdFuture(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.item.owner.id=?1 and b.status=?2 order by b.start desc")
-    List<Booking> getAllBookingsByItemOwnerIdAndByStatus(int userId, BookingStatus status);
+    @Query("select b from Booking b where b.item.owner.id=?1 and b.status=?2")
+    List<Booking> getAllBookingsByItemOwnerIdAndByStatus(int userId, BookingStatus status, Sort sort);
 
     List<Booking> getAllBookingsByBookerId(int userId, Sort sort);
 
-    @Query("select b from Booking b where b.booker.id=?1 and b.start<?2 and b.end>?2 order by b.start desc")
-    List<Booking> getAllBookingsByBookerIdCurrent(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.booker.id=?1 and b.start<?2 and b.end>?2")
+    List<Booking> getAllBookingsByBookerIdCurrent(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.booker.id=?1 and b.end<?2 order by b.start desc")
-    List<Booking> getAllBookingsByBookerIdPast(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.booker.id=?1 and b.end<?2")
+    List<Booking> getAllBookingsByBookerIdPast(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.booker.id=?1 and b.start>?2 order by b.start desc")
-    List<Booking> getAllBookingsByBookerIdFuture(int userId, LocalDateTime now);
+    @Query("select b from Booking b where b.booker.id=?1 and b.start>?2")
+    List<Booking> getAllBookingsByBookerIdFuture(int userId, LocalDateTime now, Sort sort);
 
-    @Query("select b from Booking b where b.booker.id=?1 and b.status=?2 order by b.start desc")
-    List<Booking> getAllBookingsByBookerIdAndByStatus(int userId, BookingStatus status);
+    @Query("select b from Booking b where b.booker.id=?1 and b.status=?2")
+    List<Booking> getAllBookingsByBookerIdAndByStatus(int userId, BookingStatus status, Sort sort);
 
     void deleteAllByBookerId(int ownerId);
 

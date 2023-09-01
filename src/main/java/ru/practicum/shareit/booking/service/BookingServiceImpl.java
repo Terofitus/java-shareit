@@ -62,19 +62,24 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.getAllBookingsByBookerId(userId, Sort.by("start").descending());
                 break;
             case CURRENT:
-                bookings = bookingRepository.getAllBookingsByBookerIdCurrent(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByBookerIdCurrent(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case PAST:
-                bookings = bookingRepository.getAllBookingsByBookerIdPast(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByBookerIdPast(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case FUTURE:
-                bookings = bookingRepository.getAllBookingsByBookerIdFuture(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByBookerIdFuture(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case WAITING:
-                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.WAITING,
+                        Sort.by("start").descending());
                 break;
             case REJECTED:
-                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.REJECTED,
+                        Sort.by("start").descending());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
@@ -101,19 +106,24 @@ public class BookingServiceImpl implements BookingService {
                         Sort.by("start").descending());
                 break;
             case CURRENT:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case PAST:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdPast(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdPast(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case FUTURE:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdFuture(userId, LocalDateTime.now());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdFuture(userId, LocalDateTime.now(),
+                        Sort.by("start").descending());
                 break;
             case WAITING:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.WAITING,
+                        Sort.by("start").descending());
                 break;
             case REJECTED:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.REJECTED,
+                        Sort.by("start").descending());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
