@@ -1,31 +1,39 @@
 package ru.practicum.shareit.booking.util;
 
-import ru.practicum.shareit.booking.dto.BookingDto;
+import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
+import ru.practicum.shareit.booking.dto.BookingDtoForGet;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.exception.ItemNotAvailableException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-public final class BookingMapper {
-    private BookingMapper() {
-    }
+@UtilityClass
+public class BookingMapper {
 
-    public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(
+    public BookingDtoForGet toBookingDtoForGet(Booking booking) {
+        return new BookingDtoForGet(
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getItem(),
-                booking.getBooker(),
+                new BookingDtoForGet.ItemShortDto(booking.getItem().getId(), booking.getItem().getName()),
+                new BookingDtoForGet.UserShortDto(booking.getBooker().getId()),
                 booking.getStatus()
         );
     }
 
-    public static Booking toBooking(BookingDto bookingDto) {
+    public Booking toBookingFromDtoCreate(BookingDtoForCreateUpdate bookingDto, User booker, Item item) {
+        if (!item.getAvailable()) {
+            throw new ItemNotAvailableException("Предмет с id=" + item.getId() + " не доступен для бронирования.");
+        }
         return new Booking(
                 bookingDto.getId(),
                 bookingDto.getStart(),
                 bookingDto.getEnd(),
-                bookingDto.getItem(),
-                bookingDto.getBooker(),
-                bookingDto.getStatus()
+                item,
+                booker,
+                BookingStatus.WAITING
         );
     }
 }

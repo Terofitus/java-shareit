@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum BookingStatus {
     WAITING("Бронирование ожидает подтверждения."),
     APPROVED("Бронирование подтверждено владельцем."),
@@ -10,8 +12,4 @@ public enum BookingStatus {
     CANCELED("Бронирование отменено создателем.");
 
     private final String message;
-
-    BookingStatus(String message) {
-        this.message = message;
-    }
 }

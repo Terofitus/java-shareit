@@ -1,21 +1,18 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface ItemRepository {
-    Item getItemById(int id);
+public interface ItemRepository extends CrudRepository<Item, Integer> {
+    @Query("select i from Item i where i.available=true and (lower(i.name) like lower(concat('%', :text, '%'))" +
+            " or lower(i.description) like lower(concat('%', :text, '%')))")
+    List<Item> findAllByNameOrDescriptionContainsIgnoreCase(String text);
 
-    List<Item> getAllItemsOfUser(int userId);
+    List<Item> findAllByOwner(User user);
 
-    Item addItem(Item item);
-
-    Item updateItem(Item item);
-
-    void deleteAllItemsOfUserById(int userId);
-
-    void deleteItemById(int itemId);
-
-    List<Item> searchItemsByDescription(String text);
+    void deleteAllByOwnerId(Integer userId);
 }
