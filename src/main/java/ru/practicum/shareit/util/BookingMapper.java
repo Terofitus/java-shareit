@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.util;
+package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
@@ -17,7 +17,7 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                new BookingDtoForGet.ItemShortDto(booking.getItem().getId(), booking.getItem().getName()),
+                new BookingDtoForGet.ItemShortBookingDto(booking.getItem().getId(), booking.getItem().getName()),
                 new BookingDtoForGet.UserShortDto(booking.getBooker().getId()),
                 booking.getStatus()
         );

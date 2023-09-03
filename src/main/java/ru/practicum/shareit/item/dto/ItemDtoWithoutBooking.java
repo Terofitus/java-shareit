@@ -20,4 +20,5 @@ public class ItemDtoWithoutBooking implements ItemDto {
     @NotNull
     private Boolean available;
     private List<CommentDtoForGet> comments;
+    private Integer requestId;
 }

@@ -8,9 +8,9 @@ import java.util.List;
 public interface BookingService {
     Booking getBookingByOwnerOrBookerId(int bookingId, int ownerId);
 
-    List<Booking> getAllBookingsByUserIdAndState(int userId, String state);
+    List<Booking> getAllBookingsByUserIdAndState(int userId, String state, int from, int size);
 
-    List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state);
+    List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state, int from, int size);
 
     Booking addBooking(BookingDtoForCreateUpdate bookingDtoForCreateUpdate, int userId);
 

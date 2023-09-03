@@ -3,22 +3,28 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.repository.BookingRepositoryForCustomMethod;
 import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.exception.ItemRequestNotFoundException;
 import ru.practicum.shareit.exception.NoAccessRightsException;
 import ru.practicum.shareit.item.dto.CommentDtoForCreate;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.util.ItemMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.util.ItemMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepositoryForCustomMethod bRForCustomMethod;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -69,11 +76,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> getAllItemsOfUser(int userId) {
+    public List<ItemDto> getAllItemsOfUser(int userId, int from, int size) {
+        if (from < 0 || size <= 0) {
+            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
+                    "аргумент size не может быть равен или меньше 0.");
+        }
         User user = userService.getUserById(userId);
         log.info("Запрошенны все предметы пользователя с id={}", userId);
-
-        List<Item> items = itemRepository.findAllByOwner(user);
+        List<Item> items = itemRepository.findAllByOwner(user, PageRequest.of(from / size, size, Sort.unsorted()));
         return items.stream().map(item -> {
             BookingShortDto nextBooking = bRForCustomMethod.getNextBooking(item.getId());
             BookingShortDto lastBooking = bRForCustomMethod.getLastBooking(item.getId());
@@ -84,9 +94,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
-    public Item addItem(int userId, Item item) {
+    public Item addItem(int userId, ItemDtoWithoutBooking itemDto) {
         User owner = userService.getUserById(userId);
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
+        if (itemDto.getRequestId() != null) {
+            Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+            item.setRequest(itemRequest.orElseThrow(() -> new ItemRequestNotFoundException(
+                    String.format("Запрос запроса предмета с id=%d не найден.", itemDto.getRequestId()))));
+        }
         item = itemRepository.save(item);
         log.info("Добавлен предмет с id={}", item.getId());
         return item;
@@ -145,8 +161,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Item> searchItemsByDescription(String text) {
-        return itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text);
+    public List<Item> searchItemsByDescription(String text, int from, int size) {
+        if (from < 0 || size <= 0) {
+            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
+                    "аргумент size не может быть равен или меньше 0.");
+        }
+        return itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text,
+                PageRequest.of(from / size, size, Sort.unsorted()));
     }
 
     private void checkingAccessRightsOfUserToItem(Item item, User user) {
