@@ -56,7 +56,7 @@ public class ItemMapper {
 
     public Item toItem(ItemDtoWithoutBooking itemDto) {
         return new Item(
-                itemDto.getId(),
+                itemDto.getId() == null ? null : itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),

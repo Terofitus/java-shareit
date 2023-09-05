@@ -3,7 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ItemRequestNotFoundException;
@@ -13,6 +13,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.ItemRequestMapper;
+import ru.practicum.shareit.util.PageableCreator;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,13 +46,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllItemRequests(int userId, int from, int size) {
         userService.getUserById(userId);
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
-                    "аргумент size не может быть равен или меньше 0.");
-        }
+        Pageable page = PageableCreator.toPageable(from, size, Sort.by("created").ascending());
         log.info("Запрошены все запросы предметов");
-        List<ItemRequest> itemRequests = itemRequestRepository.findAllWithoutOwnerRequests(userId,
-                PageRequest.of(from / size, size, Sort.by("created").ascending()));
+        List<ItemRequest> itemRequests = itemRequestRepository.findAllWithoutOwnerRequests(userId, page);
         return itemRequests.stream().map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
     }
 

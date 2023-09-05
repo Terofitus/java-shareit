@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"id", "items"})
 public class ItemRequestDto {
     @Null
     private Integer id;

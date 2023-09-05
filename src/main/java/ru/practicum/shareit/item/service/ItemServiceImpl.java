@@ -3,10 +3,8 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.repository.BookingRepositoryForCustomMethod;
@@ -25,6 +23,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.ItemMapper;
+import ru.practicum.shareit.util.PageableCreator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,13 +76,10 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public List<ItemDto> getAllItemsOfUser(int userId, int from, int size) {
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
-                    "аргумент size не может быть равен или меньше 0.");
-        }
+        Pageable pageable = PageableCreator.toPageable(from, size, null);
         User user = userService.getUserById(userId);
         log.info("Запрошенны все предметы пользователя с id={}", userId);
-        List<Item> items = itemRepository.findAllByOwner(user, PageRequest.of(from / size, size, Sort.unsorted()));
+        List<Item> items = itemRepository.findAllByOwner(user, pageable);
         return items.stream().map(item -> {
             BookingShortDto nextBooking = bRForCustomMethod.getNextBooking(item.getId());
             BookingShortDto lastBooking = bRForCustomMethod.getLastBooking(item.getId());
@@ -92,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         }).collect(Collectors.toList());
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Item addItem(int userId, ItemDtoWithoutBooking itemDto) {
         User owner = userService.getUserById(userId);
@@ -108,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Comment addCommentToItem(int userId, CommentDtoForCreate commentDto, int itemId) {
         if (!bRForCustomMethod.checkPastBookings(itemId, userId)) {
@@ -123,7 +119,7 @@ public class ItemServiceImpl implements ItemService {
         return commentFromDb;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Item updateItem(Item item, int userId) {
         Optional<Item> itemFromDbOpt = itemRepository.findById(item.getId());
@@ -162,12 +158,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public List<Item> searchItemsByDescription(String text, int from, int size) {
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
-                    "аргумент size не может быть равен или меньше 0.");
-        }
-        return itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text,
-                PageRequest.of(from / size, size, Sort.unsorted()));
+        Pageable pageable = PageableCreator.toPageable(from, size, null);
+        return itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text, pageable);
     }
 
     private void checkingAccessRightsOfUserToItem(Item item, User user) {

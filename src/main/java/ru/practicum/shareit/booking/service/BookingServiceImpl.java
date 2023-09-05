@@ -3,11 +3,9 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
 import ru.practicum.shareit.booking.model.Booking;
@@ -21,6 +19,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.BookingMapper;
+import ru.practicum.shareit.util.PageableCreator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,11 +51,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookingsByUserIdAndState(int userId, String state, int from, int size) {
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
-                    "аргумент size не может быть равен или меньше 0.");
-        }
-        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
+        Pageable pageable = PageableCreator.toPageable(from, size, Sort.by("start").descending());
         List<Booking> bookings;
         BookingState bookingState;
         try {
@@ -97,11 +92,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state, int from, int size) {
-        if (from < 0 || size <= 0) {
-            throw new IllegalArgumentException("Аргумент from не может быть меньше size и 0, " +
-                    "аргумент size не может быть равен или меньше 0.");
-        }
-        Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
+        Pageable pageable = PageableCreator.toPageable(from, size, Sort.by("start").descending());
         List<Booking> bookings;
         BookingState bookingState;
         try {
@@ -140,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
         return bookings;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Booking addBooking(BookingDtoForCreateUpdate bookingDtoForCreateUpdate, int userId) {
         User user = userService.getUserById(userId);
@@ -154,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingFromDb;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Booking updateBooking(Booking booking, boolean approved, int userId) {
         if (booking.getItem().getOwner().getId() != userId) {

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,8 +10,9 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"available", "requestId", "comments"})
 public class ItemDtoWithoutBooking implements ItemDto {
-    private int id;
+    private Integer id;
     @NotNull
     @NotBlank
     private String name;
