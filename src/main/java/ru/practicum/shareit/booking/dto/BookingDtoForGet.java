@@ -20,6 +20,7 @@ public class BookingDtoForGet {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ItemShortBookingDto {
         private int id;
         private String name;
@@ -27,6 +28,7 @@ public class BookingDtoForGet {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class UserShortDto {
         private int id;
     }

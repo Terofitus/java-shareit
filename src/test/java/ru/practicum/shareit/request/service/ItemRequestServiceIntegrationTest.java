@@ -38,6 +38,9 @@ class ItemRequestServiceIntegrationTest {
         User user2 = generator.nextObject(User.class);
         user2.setId(2);
 
+        userService.addUser(user1);
+        userService.addUser(user2);
+
         ItemRequestDto itemRequestDto = new ItemRequestDto(null, "asd", LocalDateTime.now(), null);
         ItemRequest itemRequest = ItemRequestMapper
                 .toItemRequest(itemRequestService.addItemRequest(1, itemRequestDto), user1);
@@ -49,8 +52,6 @@ class ItemRequestServiceIntegrationTest {
         item2.setOwner(user2);
         item2.setRequest(itemRequest);
 
-        userService.addUser(user1);
-        userService.addUser(user2);
         itemService.addItem(1, ItemMapper.toItemDtoWithoutBooking(item1, null));
         itemService.addItem(2, ItemMapper.toItemDtoWithoutBooking(item2, null));
     }
@@ -83,7 +84,7 @@ class ItemRequestServiceIntegrationTest {
 
     @Test
     void test_getItemRequest_whenIdIncorrect_shouldThrowException() {
-        ItemRequestNotFoundException exception = assertThrows(ItemRequestNotFoundException.class,
+        assertThrows(ItemRequestNotFoundException.class,
                 () -> itemRequestService.getItemRequest(1, 100));
     }
 }
