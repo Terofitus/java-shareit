@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -59,6 +60,18 @@ class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpectAll(status().isBadRequest(), content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void test_addUser_whenUserCorrect_shouldReturnStatus200() throws Exception {
+        UserDto user = new UserDto(null, "ASdasd", "1213asdasd@mail.ru");
+        String json = mapper.writeValueAsString(user);
+        User userFromService = generator.nextObject(User.class);
+
+        Mockito.when(userService.addUser(Mockito.any(User.class))).thenReturn(userFromService);
+
+        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

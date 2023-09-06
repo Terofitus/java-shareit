@@ -22,7 +22,10 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.util.ItemMapper;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,6 +83,21 @@ class ItemControllerTest {
     }
 
     @Test
+    void test_searchItemsByDescription_whenArgumentsCorrect_shouldReturnStatus200() throws Exception {
+        Mockito.when(itemService.searchItemsByDescription(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(Collections.emptyList());
+
+        MvcResult result = mockMvc.perform(get("/items/search?text=12221")).andExpectAll(status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        List<ItemDto> items = mapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<ItemDto>>() {
+                });
+
+        assertTrue(items.isEmpty());
+    }
+
+    @Test
     void test_addItem_whenItemDtoNoCorrect_shouldReturnStatus400AndErrorResponse() throws Exception {
         ItemDtoWithoutBooking item = generator.nextObject(ItemDtoWithoutBooking.class);
         item.setName(null);
@@ -87,6 +105,19 @@ class ItemControllerTest {
 
         mockMvc.perform(post("/items").contentType(MediaType.APPLICATION_JSON)
                 .header("X-Sharer-User-Id", 1).content(json)).andExpectAll(status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void test_addItem_whenItemDtoCorrect_shouldReturnStatus200AndJson() throws Exception {
+        ItemDtoWithoutBooking item = generator.nextObject(ItemDtoWithoutBooking.class);
+        String json = mapper.writeValueAsString(item);
+
+        Mockito.when(itemService.addItem(Mockito.anyInt(), Mockito.any(ItemDtoWithoutBooking.class)))
+                .thenReturn(generator.nextObject(Item.class));
+
+        mockMvc.perform(post("/items").contentType(MediaType.APPLICATION_JSON)
+                .header("X-Sharer-User-Id", 1).content(json)).andExpectAll(status().isOk(),
                 content().contentType(MediaType.APPLICATION_JSON));
     }
 
@@ -109,6 +140,22 @@ class ItemControllerTest {
     @Test
     void test_updateItem_whenHeaderWithUserIdNotSend_shouldReturnStatus500() throws Exception {
         mockMvc.perform(patch("/items/1")).andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void test_updateItem_whenArgumentsCorrect_shouldReturnStatus200AndJson() throws Exception {
+        Map<String, Object> dataOfItem = new HashMap<>();
+        dataOfItem.put("name", "asdada");
+        dataOfItem.put("description", "asdasxcv");
+        dataOfItem.put("available", true);
+        String json = mapper.writeValueAsString(dataOfItem);
+        Item item = generator.nextObject(Item.class);
+
+        Mockito.when(itemService.updateItem(Mockito.any(Item.class), Mockito.anyInt())).thenReturn(item);
+
+        mockMvc.perform(patch("/items/1").contentType(MediaType.APPLICATION_JSON)
+                .header("X-Sharer-User-Id", 1).content(json)).andExpectAll(status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

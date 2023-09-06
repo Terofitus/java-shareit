@@ -81,6 +81,20 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void test_getAllBookingsByUserIdAndState_whenStateIncorrect_shouldThrowException() {
+        Booking booking1 = generator.nextObject(Booking.class);
+        booking1.setId(1);
+        booking1.getBooker().setId(1);
+        Booking booking2 = generator.nextObject(Booking.class);
+        booking2.setId(2);
+        booking2.getBooker().setId(1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.getAllBookingsByUserIdAndState(1, "asdasd", 0, 20));
+        assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
+    }
+
+    @Test
     void test_getAllBookingsByUserIdAndState_whenCallMethodWithIllegalState_shouldThrowException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getAllBookingsByItemOwnerIdAndState(1, "asd", 0, 20));

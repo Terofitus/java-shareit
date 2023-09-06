@@ -20,7 +20,7 @@ import java.util.List;
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String description;
     @OneToOne(fetch = FetchType.EAGER)
     private User requestor;

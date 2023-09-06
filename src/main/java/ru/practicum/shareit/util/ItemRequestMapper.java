@@ -30,7 +30,7 @@ public class ItemRequestMapper {
 
     public ItemRequest toItemRequest(ItemRequestDto itemRequestDto, User user) {
         return new ItemRequest(
-                itemRequestDto.getId() == null ? 0 : itemRequestDto.getId(),
+                itemRequestDto.getId() == null ? null : itemRequestDto.getId(),
                 itemRequestDto.getDescription(),
                 user,
                 itemRequestDto.getCreated() == null ? LocalDateTime.now() : itemRequestDto.getCreated(),

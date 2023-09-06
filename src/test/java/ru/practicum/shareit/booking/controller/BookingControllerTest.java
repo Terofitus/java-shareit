@@ -21,6 +21,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.util.BookingMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,6 +82,13 @@ class BookingControllerTest {
     }
 
     @Test
+    void test_getAllBookingsByOwnerIdAndState_whenArgumentsCorrect_shouldReturnStatus200()
+            throws Exception {
+        mockMvc.perform(get("/bookings/owner").header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void test_addBooking_whenBookingNotValid_shouldReturnStatus400AndErrorMessage() throws Exception {
         BookingDtoForCreateUpdate bookingDto = generator.nextObject(BookingDtoForCreateUpdate.class);
         bookingDto.setId(1);
@@ -103,6 +111,26 @@ class BookingControllerTest {
         mockMvc.perform(post("/bookings").contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1).content(json))
                 .andExpectAll(status().isBadRequest(), content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void test_addBooking_whenArgumentsCorrect_shouldReturnStatus200() throws Exception {
+        BookingDtoForCreateUpdate bookingDto = new BookingDtoForCreateUpdate(null, 2,
+                LocalDateTime.of(2023, 10, 10, 10, 20, 20),
+                LocalDateTime.of(2024, 10, 10, 10, 20, 20));
+        User user = new User(1, "zxv", "cvb41@maill.ru");
+        User user2 = new User(2, "zxv", "cvbasd41@maill.ru");
+        Item item = new Item(2, "asd", "azxc", true, user2, null);
+        Booking booking = BookingMapper.toBookingFromDtoCreate(bookingDto, user, item);
+        String json = mapper.writeValueAsString(bookingDto);
+        booking.setId(1);
+
+        Mockito.when(bookingService.addBooking(Mockito.any(BookingDtoForCreateUpdate.class), Mockito.anyInt()))
+                .thenReturn(booking);
+
+        mockMvc.perform(post("/bookings").contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1).content(json))
+                .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
