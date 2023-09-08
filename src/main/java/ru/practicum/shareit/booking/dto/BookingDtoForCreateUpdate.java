@@ -1,16 +1,18 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.util.MarkerForCreate;
-import ru.practicum.shareit.booking.util.MarkerForUpdate;
-import ru.practicum.shareit.booking.util.StartEndTime;
+import ru.practicum.shareit.util.MarkerForCreate;
+import ru.practicum.shareit.util.MarkerForUpdate;
+import ru.practicum.shareit.util.StartEndTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @StartEndTime(groups = MarkerForCreate.class)
 public class BookingDtoForCreateUpdate {

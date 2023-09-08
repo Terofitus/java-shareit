@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.CommentDtoForCreate;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
@@ -12,9 +13,9 @@ public interface ItemService {
 
     Item getItemById(int id);
 
-    List<ItemDto> getAllItemsOfUser(int userId);
+    List<ItemDto> getAllItemsOfUser(int userId, int from, int size);
 
-    Item addItem(int userId, Item item);
+    Item addItem(int userId, ItemDtoWithoutBooking item);
 
     Comment addCommentToItem(int userId, CommentDtoForCreate commentDto, int itemId);
 
@@ -24,5 +25,5 @@ public interface ItemService {
 
     void deleteItemById(int userId, int itemId);
 
-    List<Item> searchItemsByDescription(String text);
+    List<Item> searchItemsByDescription(String text, int from, int size);
 }

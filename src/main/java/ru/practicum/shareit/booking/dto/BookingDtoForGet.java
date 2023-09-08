@@ -14,19 +14,21 @@ public class BookingDtoForGet {
     private int id;
     private LocalDateTime start;
     private LocalDateTime end;
-    private ItemShortDto item;
+    private ItemShortBookingDto item;
     private UserShortDto booker;
     private BookingStatus status;
 
     @Data
     @AllArgsConstructor
-    public static class ItemShortDto {
+    @NoArgsConstructor
+    public static class ItemShortBookingDto {
         private int id;
         private String name;
     }
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class UserShortDto {
         private int id;
     }

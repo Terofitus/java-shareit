@@ -9,7 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.item.util.ItemMapper;
+import ru.practicum.shareit.util.ItemMapper;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -30,14 +30,18 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return itemService.getAllItemsOfUser(userId);
+    public List<ItemDto> getAllItemsOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                           @RequestParam(required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(required = false, defaultValue = "20") Integer size) {
+        return itemService.getAllItemsOfUser(userId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemsByDescription(@RequestParam(required = false) String text) {
-        if (text.isEmpty()) return new ArrayList<>();
-        List<Item> items = itemService.searchItemsByDescription(text);
+    public List<ItemDto> searchItemsByDescription(@RequestParam(required = false) String text,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                  @RequestParam(required = false, defaultValue = "20") Integer size) {
+        if (text == null || text.isEmpty()) return new ArrayList<>();
+        List<Item> items = itemService.searchItemsByDescription(text, from, size);
         return items.stream().map((Item item) -> ItemMapper.toItemDtoWithoutBooking(item, null))
                 .collect(Collectors.toList());
     }
@@ -45,8 +49,7 @@ public class ItemController {
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                            @Valid @RequestBody ItemDtoWithoutBooking itemDto) {
-        Item item = ItemMapper.toItem(itemDto);
-        return ItemMapper.toItemDtoWithoutBooking(itemService.addItem(userId, item), null);
+        return ItemMapper.toItemDtoWithoutBooking(itemService.addItem(userId, itemDto), null);
     }
 
     @PostMapping("/{itemId}/comment")

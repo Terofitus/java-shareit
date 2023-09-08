@@ -3,22 +3,23 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.util.BookingMapper;
 import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.util.BookingMapper;
+import ru.practicum.shareit.util.PageableCreator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +50,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBookingsByUserIdAndState(int userId, String state) {
+    public List<Booking> getAllBookingsByUserIdAndState(int userId, String state, int from, int size) {
+        Pageable pageable = PageableCreator.toPageable(from, size, Sort.by("start").descending());
         List<Booking> bookings;
         BookingState bookingState;
         try {
@@ -59,27 +61,24 @@ public class BookingServiceImpl implements BookingService {
         }
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.getAllBookingsByBookerId(userId, Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByBookerId(userId, pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepository.getAllBookingsByBookerIdCurrent(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByBookerIdCurrent(userId, LocalDateTime.now(), pageable);
                 break;
             case PAST:
-                bookings = bookingRepository.getAllBookingsByBookerIdPast(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByBookerIdPast(userId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepository.getAllBookingsByBookerIdFuture(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByBookerIdFuture(userId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
                 bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.WAITING,
-                        Sort.by("start").descending());
+                        pageable);
                 break;
             case REJECTED:
                 bookings = bookingRepository.getAllBookingsByBookerIdAndByStatus(userId, BookingStatus.REJECTED,
-                        Sort.by("start").descending());
+                        pageable);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
@@ -92,7 +91,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state) {
+    public List<Booking> getAllBookingsByItemOwnerIdAndState(int userId, String state, int from, int size) {
+        Pageable pageable = PageableCreator.toPageable(from, size, Sort.by("start").descending());
         List<Booking> bookings;
         BookingState bookingState;
         try {
@@ -102,28 +102,24 @@ public class BookingServiceImpl implements BookingService {
         }
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.getAllBookingsByItemOwnerId(userId,
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByItemOwnerId(userId, pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now(), pageable);
                 break;
             case PAST:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdPast(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdPast(userId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepository.getAllBookingsByItemOwnerIdFuture(userId, LocalDateTime.now(),
-                        Sort.by("start").descending());
+                bookings = bookingRepository.getAllBookingsByItemOwnerIdFuture(userId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.WAITING,
-                        Sort.by("start").descending());
+                        pageable);
                 break;
             case REJECTED:
                 bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(userId, BookingStatus.REJECTED,
-                        Sort.by("start").descending());
+                        pageable);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
@@ -135,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
         return bookings;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Booking addBooking(BookingDtoForCreateUpdate bookingDtoForCreateUpdate, int userId) {
         User user = userService.getUserById(userId);
@@ -149,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingFromDb;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     @Override
     public Booking updateBooking(Booking booking, boolean approved, int userId) {
         if (booking.getItem().getOwner().getId() != userId) {

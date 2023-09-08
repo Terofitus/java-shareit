@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.util;
+package ru.practicum.shareit.util;
 
 import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
 

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.util;
+package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
@@ -50,12 +50,13 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                commentsDto);
+                commentsDto,
+                item.getRequest() == null ? null : item.getRequest().getId());
     }
 
     public Item toItem(ItemDtoWithoutBooking itemDto) {
         return new Item(
-                itemDto.getId(),
+                itemDto.getId() == null ? null : itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
