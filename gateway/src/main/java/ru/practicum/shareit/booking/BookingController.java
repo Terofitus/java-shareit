@@ -21,6 +21,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated(MarkerForCreate.class)
 public class BookingController {
     private final BookingClient bookingClient;
+
     @GetMapping
     public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long userId,
                                               @RequestParam(name = "state", defaultValue = "all") String stateParam,
