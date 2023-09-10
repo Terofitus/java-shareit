@@ -27,15 +27,6 @@
         <module>gateway</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>lib</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/lib-1.0-SNAPSHOT.jar</systemPath>
-        </dependency>
-    </dependencies>
     <build>
         <pluginManagement>
             <plugins>

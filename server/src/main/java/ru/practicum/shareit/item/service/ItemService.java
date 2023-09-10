@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.service;
 
-import ru.practicum.dto.CommentDtoForCreate;
-import ru.practicum.dto.ItemDto;
-import ru.practicum.dto.ItemDtoWithoutBooking;
+import ru.practicum.shareit.item.dto.CommentDtoForCreate;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 

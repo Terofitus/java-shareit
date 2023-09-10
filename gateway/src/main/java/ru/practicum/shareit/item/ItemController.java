@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.CommentDtoForCreate;
-import ru.practicum.dto.ItemDtoWithoutBooking;
+import ru.practicum.shareit.dto.CommentDtoForCreate;
+import ru.practicum.shareit.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.util.ValidatingOfPageable;
 
 import javax.validation.Valid;

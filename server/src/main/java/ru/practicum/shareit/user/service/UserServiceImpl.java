@@ -7,8 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.EmailAlreadyTakenException;
-import ru.practicum.exception.UserNotFoundException;
+import ru.practicum.shareit.booking.exception.EmailAlreadyTakenException;
+import ru.practicum.shareit.booking.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 

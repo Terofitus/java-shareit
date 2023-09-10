@@ -1,8 +1,8 @@
 package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.dto.ItemDtoWithoutBooking;
-import ru.practicum.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 

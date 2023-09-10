@@ -1,7 +1,7 @@
 package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Map;

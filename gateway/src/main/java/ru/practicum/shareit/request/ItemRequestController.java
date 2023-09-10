@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.ItemRequestDto;
+import ru.practicum.shareit.dto.ItemRequestDto;
 import ru.practicum.shareit.util.ValidatingOfPageable;
 
 import javax.validation.Valid;

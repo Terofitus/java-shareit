@@ -1,11 +1,11 @@
 package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.dto.BookingDtoForCreateUpdate;
-import ru.practicum.dto.BookingDtoForGet;
-import ru.practicum.dto.BookingStatus;
-import ru.practicum.exception.ItemNotAvailableException;
+import ru.practicum.shareit.booking.dto.BookingDtoForCreateUpdate;
+import ru.practicum.shareit.booking.dto.BookingDtoForGet;
+import ru.practicum.shareit.booking.exception.ItemNotAvailableException;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 

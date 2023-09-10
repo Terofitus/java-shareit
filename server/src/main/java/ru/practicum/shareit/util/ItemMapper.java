@@ -1,10 +1,10 @@
 package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.dto.BookingShortDto;
-import ru.practicum.dto.CommentDtoForGet;
-import ru.practicum.dto.ItemDtoWithBooking;
-import ru.practicum.dto.ItemDtoWithoutBooking;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.item.dto.CommentDtoForGet;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
+import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 

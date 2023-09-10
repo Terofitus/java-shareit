@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-import ru.practicum.exception.EmailAlreadyTakenException;
-import ru.practicum.exception.UserNotFoundException;
+import ru.practicum.shareit.booking.exception.EmailAlreadyTakenException;
+import ru.practicum.shareit.booking.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
