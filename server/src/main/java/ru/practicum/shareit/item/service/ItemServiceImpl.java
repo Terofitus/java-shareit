@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.getUserById(userId);
         log.info("Запрошенны все предметы пользователя с id={}", userId);
         List<Item> items = itemRepository.findAllByOwner(user, pageable);
-        return items.stream().map(item -> {
+        return items.stream().map((Item item) -> {
             BookingShortDto nextBooking = bRForCustomMethod.getNextBooking(item.getId());
             BookingShortDto lastBooking = bRForCustomMethod.getLastBooking(item.getId());
             List<Comment> comments = commentRepository.findAllByItemId(item.getId());

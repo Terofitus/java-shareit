@@ -36,7 +36,7 @@ class UserServiceIntegrationTest {
     void test_getAllUsers_whenUsersExist_shouldReturnListOfUser() {
         List<User> users = userService.getAllUsers();
 
-        assertEquals(users.size(), 2);
+        assertEquals(2, users.size());
     }
 
     @Test

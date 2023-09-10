@@ -41,7 +41,7 @@ class UserServiceImplTest {
 
         User userFromService = userService.getUserById(1);
 
-        assertEquals(userFromService, user);
+        assertEquals(user, userFromService);
         Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.anyInt());
     }
 
@@ -63,7 +63,7 @@ class UserServiceImplTest {
 
         User userFromService = userService.addUser(user);
 
-        assertEquals(userFromService, user);
+        assertEquals(user, userFromService);
         Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     }
 
@@ -89,7 +89,7 @@ class UserServiceImplTest {
         Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
         User userFromService = userService.updateUser(user);
 
-        assertEquals(userFromService, user);
+        assertEquals(user, userFromService);
         Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     }
 

@@ -1,7 +1,5 @@
 package ru.practicum.shareit.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -12,7 +10,6 @@ import java.util.Map;
 
 public class BaseClient {
     protected final RestTemplate rest;
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
@@ -68,7 +65,7 @@ public class BaseClient {
         return patch(path, null, null, body);
     }
 
-    protected <T> ResponseEntity<Object> patch(String path, long userId) {
+    protected ResponseEntity<Object> patch(String path, long userId) {
         return patch(path, userId, null, null);
     }
 
@@ -108,7 +105,7 @@ public class BaseClient {
         return prepareGatewayResponse(shareitServerResponse);
     }
 
-    private HttpHeaders defaultHeaders(Long userId) {
+    private static HttpHeaders defaultHeaders(Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

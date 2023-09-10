@@ -42,7 +42,7 @@ class ItemRequestServiceImplTest {
         Mockito.when(itemRequestRepository.save(Mockito.any(ItemRequest.class))).thenReturn(itemRequest);
         ItemRequestDto itemRequestDtoFromService = itemRequestService.addItemRequest(1, itemRequestDto);
 
-        assertEquals(itemRequestDtoFromService, itemRequestDto);
+        assertEquals(itemRequestDto, itemRequestDtoFromService);
         Mockito.verify(itemRequestRepository, Mockito.times(1))
                 .save(Mockito.any(ItemRequest.class));
     }
@@ -77,7 +77,7 @@ class ItemRequestServiceImplTest {
                 .thenReturn(itemRequestList);
         List<ItemRequestDto> itemDtosFromService = itemRequestService.getAllItemRequests(1, 0, 20);
 
-        assertIterableEquals(itemDtosFromService, itemRequestDtoList);
+        assertIterableEquals(itemRequestDtoList, itemDtosFromService);
     }
 
     @Test
@@ -104,7 +104,7 @@ class ItemRequestServiceImplTest {
         Mockito.when(itemRequestRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(itemRequest));
         ItemRequestDto itemRequestDtoFromService = itemRequestService.getItemRequest(1, 1);
 
-        assertEquals(itemRequestDtoFromService, itemRequestDto);
+        assertEquals(itemRequestDto, itemRequestDtoFromService);
     }
 
     @Test

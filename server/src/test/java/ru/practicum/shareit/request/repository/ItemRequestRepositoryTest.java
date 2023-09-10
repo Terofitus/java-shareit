@@ -51,20 +51,20 @@ class ItemRequestRepositoryTest {
     }
 
     @Test
-    void getAllByRequestorId() {
+    void test_getAllByRequestorId() {
         List<ItemRequest> requests = itemRequestRepository.getAllByRequestorId(2);
 
-        assertEquals(requests.size(), 2);
-        assertEquals(requests.get(0).getId(), 2);
-        assertEquals(requests.get(1).getId(), 3);
+        assertEquals(2, requests.size());
+        assertEquals(2, requests.get(0).getId());
+        assertEquals(3, requests.get(1).getId());
     }
 
     @Test
-    void findAllWithoutOwnerRequests() {
+    void test_findAllWithoutOwnerRequests() {
         List<ItemRequest> requests = itemRequestRepository.findAllWithoutOwnerRequests(2,
                 PageableCreator.toPageable(0, 20, Sort.by("created").ascending()));
 
-        assertEquals(requests.size(), 1);
-        assertEquals(requests.get(0).getId(), 1);
+        assertEquals(1, requests.size());
+        assertEquals(1, requests.get(0).getId());
     }
 }

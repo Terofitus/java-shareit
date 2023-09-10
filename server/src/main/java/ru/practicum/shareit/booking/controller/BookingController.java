@@ -52,7 +52,8 @@ public class BookingController {
                                                                   String size) {
         List<Booking> bookings = bookingService.getAllBookingsByItemOwnerIdAndState(userId, state,
                 Integer.parseInt(from), Integer.parseInt(size));
-        return bookings.stream().map(BookingMapper::toBookingDtoForGet).collect(Collectors.toList());
+        return bookings.stream().map(BookingMapper::toBookingDtoForGet)
+                .collect(Collectors.toList());
     }
 
     @PostMapping

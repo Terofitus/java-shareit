@@ -57,22 +57,22 @@ class BookingRepositoryForCustomMethodTest {
     void test_getNextBooking_whenExist_shouldReturnBooking() {
         BookingShortDto bookingShortDto = bookingRepository.getNextBooking(1);
 
-        assertNotNull(bookingShortDto);
-        assertEquals(bookingShortDto.getId(), 1);
+        assertNotNull(bookingShortDto, "BookingShortDto равно null");
+        assertEquals( 1, bookingShortDto.getId(), "Id возвращенного dto не равно 1");
     }
 
     @Test
     void test_getLastBooking_whenExist_shouldReturnBooking() {
         BookingShortDto bookingShortDto = bookingRepository.getLastBooking(2);
 
-        assertNotNull(bookingShortDto);
-        assertEquals(bookingShortDto.getId(), 2);
+        assertNotNull(bookingShortDto, "BookingShortDto равно null");
+        assertEquals(bookingShortDto.getId(), 2, "Id возвращенного dto не равно 2");
     }
 
     @Test
     void test_checkPastBookings_whenExist_shouldReturnTrue() {
         boolean pastBooking = bookingRepository.checkPastBookings(2, 1);
 
-        assertTrue(pastBooking);
+        assertTrue(pastBooking, "boolean pastBooking равно false");
     }
 }

@@ -2,6 +2,7 @@ package ru.practicum.shareit.util;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDtoWithoutBooking;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -17,7 +18,8 @@ public class ItemRequestMapper {
         List<ItemDtoWithoutBooking> itemsDto = null;
         if (itemRequest.getItems() != null) {
             itemsDto = itemRequest.getItems().stream()
-                    .map(item -> ItemMapper.toItemDtoWithoutBooking(item, null)).collect(Collectors.toList());
+                    .map((Item item) -> ItemMapper.toItemDtoWithoutBooking(item, null))
+                    .collect(Collectors.toList());
         }
 
         return new ItemRequestDto(

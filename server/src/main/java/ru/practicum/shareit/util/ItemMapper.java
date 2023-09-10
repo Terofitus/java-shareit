@@ -28,7 +28,8 @@ public class ItemMapper {
         }
         List<CommentDtoForGet> commentsDto = new ArrayList<>();
         if (comments != null && !comments.isEmpty()) {
-            commentsDto = comments.stream().map(ItemMapper::toCommentDtoForGet).collect(Collectors.toList());
+            commentsDto = comments.stream().map(ItemMapper::toCommentDtoForGet)
+                    .collect(Collectors.toList());
         }
         return new ItemDtoWithBooking(
                 item.getId(),

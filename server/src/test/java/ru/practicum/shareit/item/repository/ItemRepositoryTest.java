@@ -47,7 +47,7 @@ class ItemRepositoryTest {
         List<Item> items = itemRepository.findAllByNameOrDescriptionContainsIgnoreCase("zxc",
                 PageRequest.of(0 / 20, 20, Sort.unsorted()));
 
-        assertEquals(items.size(), 2);
+        assertEquals(2, items.size());
     }
 
     @Test
@@ -56,18 +56,18 @@ class ItemRepositoryTest {
         List<Item> items = itemRepository.findAllByOwner(user, PageRequest.of(0 / 20, 20,
                 Sort.unsorted()));
 
-        assertEquals(items.size(), 1);
+        assertEquals(1, items.size());
     }
 
     @Test
     void test_deleteAllByOwnerId_whenItemsExist_shouldDeleteItemsOfUser() {
         User user = userRepository.findById(1).get();
         List<Item> items = itemRepository.findAllByOwner(user, PageRequest.of(0 / 20, 20, Sort.unsorted()));
-        assertEquals(items.size(), 1);
+        assertEquals(1, items.size());
 
         itemRepository.deleteAllByOwnerId(1);
 
         List<Item> items2 = itemRepository.findAllByOwner(user, PageRequest.of(0 / 20, 20, Sort.unsorted()));
-        assertEquals(items2.size(), 0);
+        assertEquals(0, items2.size());
     }
 }

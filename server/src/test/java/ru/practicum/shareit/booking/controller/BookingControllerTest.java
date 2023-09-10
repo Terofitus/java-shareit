@@ -52,7 +52,8 @@ class BookingControllerTest {
         BookingDtoForGet bookingDto = mapper.readValue(result.getResponse().getContentAsString(),
                 BookingDtoForGet.class);
 
-        assertEquals(bookingDto.getId(), booking.getId());
+        assertEquals(booking.getId(), bookingDto.getId(), "Возвращенное бронирование в результате метода get " +
+                " имеет отличный от ожидаемого id");
     }
 
     @Test
@@ -72,7 +73,7 @@ class BookingControllerTest {
         List<BookingDtoForGet> bookingsDto = mapper.readValue(result.getResponse().getContentAsString(),
                 new TypeReference<List<BookingDtoForGet>>() {
                 });
-        assertEquals(bookingsDto.size(), 2);
+        assertEquals( 2, bookingsDto.size(), "Размер возвращенного списка не равен 2");
     }
 
     @Test

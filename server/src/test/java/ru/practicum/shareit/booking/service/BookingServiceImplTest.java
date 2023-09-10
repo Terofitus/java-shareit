@@ -58,7 +58,8 @@ class BookingServiceImplTest {
         BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
                 () -> bookingService.getBookingByOwnerOrBookerId(1, 1));
 
-        assertEquals("Бронирование с id=1 не найдено.", exception.getMessage());
+        assertEquals("Бронирование с id=1 не найдено.", exception.getMessage(), "Сообщение исключения" +
+                "отличается от ожидаемого");
     }
 
     @Test
@@ -76,8 +77,8 @@ class BookingServiceImplTest {
         List<Booking> bookings = bookingService.getAllBookingsByUserIdAndState(2, BookingState.ALL.name(),
                 0, 20);
 
-        assertEquals(2, bookings.size());
-        assertEquals(booking1, bookings.get(0));
+        assertEquals(2, bookings.size(), "Размер возвращенного списка бронирований не равен 2");
+        assertEquals(booking1, bookings.get(0), "Бронирование из списка с индексом 0 не равно ожидаемому");
     }
 
     @Test
@@ -91,14 +92,16 @@ class BookingServiceImplTest {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getAllBookingsByUserIdAndState(1, "asdasd", 0, 20));
-        assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
+        assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage(), "Сообщение исключения" +
+                "отличается от ожидаемого");
     }
 
     @Test
     void test_getAllBookingsByUserIdAndState_whenCallMethodWithIllegalState_shouldThrowException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getAllBookingsByItemOwnerIdAndState(1, "asd", 0, 20));
-        assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
+        assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage(), "Сообщение исключения" +
+                "отличается от ожидаемого");
     }
 
     @Test
@@ -116,8 +119,8 @@ class BookingServiceImplTest {
         List<Booking> bookings = bookingService.getAllBookingsByUserIdAndState(2, BookingState.ALL.name(),
                 0, 20);
 
-        assertEquals(2, bookings.size());
-        assertEquals(booking1, bookings.get(0));
+        assertEquals(2, bookings.size(), "Размер возвращенного списка не равен 2");
+        assertEquals(booking1, bookings.get(0), "Бронирование из списка с индексом 1 не равно ожидаемому");
     }
 
     @Test
@@ -144,7 +147,7 @@ class BookingServiceImplTest {
 
         Booking bookingFromService = bookingService.addBooking(bookingDto, user.getId());
 
-        assertEquals(bookingFromService, booking);
+        assertEquals(booking, bookingFromService, "Возвращенное бронирование не равно ожидаемому");
         Mockito.verify(bookingRepository, Mockito.times(1)).save(Mockito.any(Booking.class));
     }
 
@@ -164,7 +167,8 @@ class BookingServiceImplTest {
 
         ItemNotFoundException exception = assertThrows(ItemNotFoundException.class,
                 () -> bookingService.addBooking(bookingDto, 1));
-        assertEquals("Нельзя создать бронирование на собственную вещь.", exception.getMessage());
+        assertEquals("Нельзя создать бронирование на собственную вещь.", exception.getMessage(),
+                "Сообщение исключения отличается от ожидаемого");
         Mockito.verify(bookingRepository, Mockito.never()).save(Mockito.any(Booking.class));
     }
 
@@ -180,7 +184,8 @@ class BookingServiceImplTest {
 
         Booking bookingFromService = bookingService.updateBooking(booking, true, 1);
 
-        assertEquals(booking.getId(), bookingFromService.getId());
+        assertEquals(booking.getId(), bookingFromService.getId(), "Id возвращенного бронирования" +
+                " не равно ожидаемому");
         Mockito.verify(bookingRepository, Mockito.times(1)).save(Mockito.any(Booking.class));
     }
 
@@ -192,7 +197,8 @@ class BookingServiceImplTest {
 
         BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
                 () -> bookingService.updateBooking(booking, true, 1));
-        assertEquals("Бронирование с id=2 не найдено.", exception.getMessage());
+        assertEquals("Бронирование с id=2 не найдено.", exception.getMessage(),
+                "Сообщение исключения отличается от ожидаемого");
         Mockito.verify(bookingRepository, Mockito.never()).save(Mockito.any(Booking.class));
     }
 
@@ -206,7 +212,8 @@ class BookingServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.updateBooking(booking, true, 1));
         assertEquals("Статус бронирования можно изменить" +
-                " только у бронирования со статусом \"WAITING\".", exception.getMessage());
+                " только у бронирования со статусом \"WAITING\".", exception.getMessage(),
+                "Сообщение исключения отличается от ожидаемого");
         Mockito.verify(bookingRepository, Mockito.never()).save(Mockito.any(Booking.class));
     }
 

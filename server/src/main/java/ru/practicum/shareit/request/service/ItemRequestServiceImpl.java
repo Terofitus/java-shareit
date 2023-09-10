@@ -49,7 +49,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Pageable page = PageableCreator.toPageable(from, size, Sort.by("created").ascending());
         log.info("Запрошены все запросы предметов");
         List<ItemRequest> itemRequests = itemRequestRepository.findAllWithoutOwnerRequests(userId, page);
-        return itemRequests.stream().map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
+        return itemRequests.stream().map(ItemRequestMapper::toItemRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -66,7 +66,7 @@ class ItemServiceImplTest {
 
         ItemDtoWithBooking itemDto = (ItemDtoWithBooking) itemService.getItemDtoById(1, 1);
 
-        assertEquals(itemDto, ItemMapper.toItemDtoWithBooking(item, nextBooking, lastBooking, comments));
+        assertEquals(ItemMapper.toItemDtoWithBooking(item, nextBooking, lastBooking, comments), itemDto);
         assertNotNull(itemDto.getNextBooking());
         assertNotNull(itemDto.getLastBooking());
         assertNotNull(itemDto.getComments());
@@ -140,7 +140,7 @@ class ItemServiceImplTest {
 
         Item itemFromService = itemService.addItem(1, ItemMapper.toItemDtoWithoutBooking(item, null));
 
-        assertEquals(itemFromService, item);
+        assertEquals(item, itemFromService);
         Mockito.verify(itemRepository, Mockito.times(1)).save(item);
     }
 
@@ -172,7 +172,7 @@ class ItemServiceImplTest {
 
         Comment commentFromService = itemService.addCommentToItem(1, commentDto, 1);
 
-        assertEquals(commentFromService, comment);
+        assertEquals(comment, commentFromService);
         Mockito.verify(commentRepository, Mockito.times(1)).save(Mockito.any(Comment.class));
     }
 
@@ -199,7 +199,7 @@ class ItemServiceImplTest {
 
         Item itemFromService = itemService.updateItem(item, 1);
 
-        assertEquals(itemFromService, item);
+        assertEquals(item, itemFromService);
     }
 
     @Test

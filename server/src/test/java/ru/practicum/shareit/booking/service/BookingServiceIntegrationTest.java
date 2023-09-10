@@ -68,7 +68,8 @@ class BookingServiceIntegrationTest {
     void test_getBookingByOwnerOrBookerId_whenUserIdNotOwnerOrBookerId_shouldThrowException() {
         BookingNotFoundException exception = assertThrows(BookingNotFoundException.class,
                 () -> bookingService.getBookingByOwnerOrBookerId(1, 3));
-        assertEquals("Бронирование с id=1 не найдено.", exception.getMessage());
+        assertEquals("Бронирование с id=1 не найдено.", exception.getMessage(),
+                "Сообщение исключения отличается от ожидаемого");
     }
 
     @Test
@@ -81,7 +82,8 @@ class BookingServiceIntegrationTest {
         List<Booking> bookings = bookingService.getAllBookingsByUserIdAndState(1, BookingState.FUTURE.name(),
                 0, 20);
 
-        assertArrayEquals(new int[]{bookings.get(0).getId(), bookings.get(1).getId()}, new int[]{3, 1});
+        assertArrayEquals(new int[]{3, 1}, new int[]{bookings.get(0).getId(), bookings.get(1).getId()},
+                "Id бронирований из возвращенного списка не равны ожидаемым");
     }
 
     @Test
@@ -89,9 +91,11 @@ class BookingServiceIntegrationTest {
         List<Booking> bookings = bookingService.getAllBookingsByItemOwnerIdAndState(1, BookingState.ALL.name(),
                 0, 20);
 
-        assertEquals(bookings.size(), 1);
-        assertEquals(bookings.get(0).getId(), 2);
-        assertEquals(bookings.get(0).getBooker().getId(), 2);
+        assertEquals(1, bookings.size(), "Размер возвращенного списка не равен 1");
+        assertEquals(2, bookings.get(0).getId(), "Id бронирований из возвращенного списка под " +
+                "индексом 0 не равно 2");
+        assertEquals(2, bookings.get(0).getBooker().getId(), "Id бронировавшего из бронирования " +
+                "из списка под индексом 0 не равно 2");
     }
 
     @Test
@@ -100,7 +104,9 @@ class BookingServiceIntegrationTest {
 
         Booking bookingAfterUpdate = bookingService.updateBooking(booking, false, 2);
 
-        assertEquals(bookingAfterUpdate.getStatus(), BookingStatus.REJECTED);
-        assertEquals(bookingAfterUpdate.getId(), booking.getId());
+        assertEquals(BookingStatus.REJECTED, bookingAfterUpdate.getStatus(), "Статус возвращенного после" +
+                " обновления бронирования не равен REJECTED");
+        assertEquals(booking.getId(), bookingAfterUpdate.getId(), "Id возвращенного после" +
+                " обновления бронирования не равно ожидаемому");
     }
 }

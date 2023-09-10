@@ -58,7 +58,7 @@ class BookingRepositoryTest {
         List<Booking> bookings = bookingRepository.getAllBookingsByItemOwnerId(1,
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertFalse(bookings.isEmpty());
+        assertFalse(bookings.isEmpty(), "Список бронирований равен null");
     }
 
     @Test
@@ -67,7 +67,7 @@ class BookingRepositoryTest {
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertTrue(bookings.isEmpty());
+        assertTrue(bookings.isEmpty(), "Список бронирований не равен null");
     }
 
     @Test
@@ -76,7 +76,7 @@ class BookingRepositoryTest {
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertTrue(bookings.isEmpty());
+        assertTrue(bookings.isEmpty(), "Список бронирований не равен null");
     }
 
     @Test
@@ -85,7 +85,7 @@ class BookingRepositoryTest {
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertFalse(bookings.isEmpty());
+        assertFalse(bookings.isEmpty(), "Список бронирований равен null");
     }
 
     @Test
@@ -94,7 +94,7 @@ class BookingRepositoryTest {
                 BookingStatus.WAITING,
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertFalse(bookings.isEmpty());
+        assertFalse(bookings.isEmpty(), "Список бронирований равен null");
     }
 
     @Test
@@ -102,7 +102,7 @@ class BookingRepositoryTest {
         List<Booking> bookings = bookingRepository.getAllBookingsByBookerId(1,
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertEquals(bookings.size(), 1);
+        assertEquals( 1, bookings.size(), "Размер возвращенного списка бронирований не равен 1");
     }
 
     @Test
@@ -111,16 +111,16 @@ class BookingRepositoryTest {
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertTrue(bookings.isEmpty());
+        assertTrue(bookings.isEmpty(), "Список бронирований не равен null");
     }
 
     @Test
-    void getAllBookingsByBookerIdPast_whenBookingNotExistInPast_shouldReturnEmptyList() {
+    void test_getAllBookingsByBookerIdPast_whenBookingNotExistInPast_shouldReturnEmptyList() {
         List<Booking> bookings = bookingRepository.getAllBookingsByBookerIdCurrent(1,
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertTrue(bookings.isEmpty());
+        assertTrue(bookings.isEmpty(), "Список бронирований не равен null");
     }
 
     @Test
@@ -129,15 +129,15 @@ class BookingRepositoryTest {
                 LocalDateTime.now(),
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertFalse(bookings.isEmpty());
+        assertFalse(bookings.isEmpty(), "Список бронирований равен null");
     }
 
     @Test
-    void getAllBookingsByBookerIdAndByStatus() {
+    void test_getAllBookingsByBookerIdAndByStatus() {
         List<Booking> bookings = bookingRepository.getAllBookingsByItemOwnerIdAndByStatus(1,
                 BookingStatus.WAITING,
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertFalse(bookings.isEmpty());
+        assertFalse(bookings.isEmpty(), "Список бронирований равен null");
     }
 }

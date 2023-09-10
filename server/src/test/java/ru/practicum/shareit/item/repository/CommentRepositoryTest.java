@@ -60,6 +60,6 @@ class CommentRepositoryTest {
     void test_findAllByItemId_shouldReturnListOfComments() {
         List<Comment> comments = commentRepository.findAllByItemId(1);
 
-        assertEquals(comments.size(), 2);
+        assertEquals(2, comments.size());
     }
 }
