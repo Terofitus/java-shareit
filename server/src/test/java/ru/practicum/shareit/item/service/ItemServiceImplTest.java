@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
+    private final EasyRandom generator = new EasyRandom();
     @InjectMocks
     private ItemServiceImpl itemService;
     @Mock
@@ -48,7 +49,6 @@ class ItemServiceImplTest {
     private CommentRepository commentRepository;
     @Mock
     private ItemRequestRepository itemRequestRepository;
-    private final EasyRandom generator = new EasyRandom();
 
     @Test
     void test_getItemDtoById_whenArgumentsCorrect_shouldReturnItemDto() {

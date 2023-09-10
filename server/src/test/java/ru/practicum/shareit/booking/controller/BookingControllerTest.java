@@ -31,12 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {BookingController.class})
 class BookingControllerTest {
+    private final EasyRandom generator = new EasyRandom();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private BookingService bookingService;
-    private final EasyRandom generator = new EasyRandom();
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void test_getBookingById_whenIdCorrect_shouldReturnJsonAndStatus200() throws Exception {
@@ -73,7 +73,7 @@ class BookingControllerTest {
         List<BookingDtoForGet> bookingsDto = mapper.readValue(result.getResponse().getContentAsString(),
                 new TypeReference<List<BookingDtoForGet>>() {
                 });
-        assertEquals( 2, bookingsDto.size(), "Размер возвращенного списка не равен 2");
+        assertEquals(2, bookingsDto.size(), "Размер возвращенного списка не равен 2");
     }
 
     @Test

@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestServiceImplTest {
+    private final EasyRandom generator = new EasyRandom();
     @InjectMocks
     private ItemRequestServiceImpl itemRequestService;
     @Mock
     private ItemRequestRepository itemRequestRepository;
     @Mock
     private UserService userService;
-    private final EasyRandom generator = new EasyRandom();
 
     @Test
     void test_addItemRequest_whenCalled_shouldSaveAndReturnItemRequest() {

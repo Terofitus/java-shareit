@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+    private final EasyRandom generator = new EasyRandom();
     @InjectMocks
     UserServiceImpl userService;
     @Mock
     private UserRepository userRepository;
-    private final EasyRandom generator = new EasyRandom();
 
     @Test
     void test_getAllUsers_shouldCallMethodFindAllOfUserRepository() {

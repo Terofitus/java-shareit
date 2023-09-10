@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
+    private final EasyRandom generator = new EasyRandom();
     @InjectMocks
     private BookingServiceImpl bookingService;
     @Mock
@@ -37,7 +38,6 @@ class BookingServiceImplTest {
     private ItemService itemService;
     @Mock
     private UserService userService;
-    private final EasyRandom generator = new EasyRandom();
 
     @Test
     void test_getBookingByOwnerOrBookerId_whenCalledMethod_shouldReturnBookingAfterSave() {
@@ -212,7 +212,7 @@ class BookingServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.updateBooking(booking, true, 1));
         assertEquals("Статус бронирования можно изменить" +
-                " только у бронирования со статусом \"WAITING\".", exception.getMessage(),
+                        " только у бронирования со статусом \"WAITING\".", exception.getMessage(),
                 "Сообщение исключения отличается от ожидаемого");
         Mockito.verify(bookingRepository, Mockito.never()).save(Mockito.any(Booking.class));
     }

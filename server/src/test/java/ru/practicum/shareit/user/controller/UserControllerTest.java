@@ -24,12 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {UserController.class})
 class UserControllerTest {
+    private final EasyRandom generator = new EasyRandom();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     @Autowired
     MockMvc mockMvc;
     @MockBean
     private UserService userService;
-    private final EasyRandom generator = new EasyRandom();
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void test_getAllUsers_shouldReturnJsonAndStatus200() throws Exception {

@@ -58,7 +58,7 @@ class BookingRepositoryForCustomMethodTest {
         BookingShortDto bookingShortDto = bookingRepository.getNextBooking(1);
 
         assertNotNull(bookingShortDto, "BookingShortDto равно null");
-        assertEquals( 1, bookingShortDto.getId(), "Id возвращенного dto не равно 1");
+        assertEquals(1, bookingShortDto.getId(), "Id возвращенного dto не равно 1");
     }
 
     @Test

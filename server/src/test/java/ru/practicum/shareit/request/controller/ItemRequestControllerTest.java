@@ -22,12 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {ItemRequestController.class})
 class ItemRequestControllerTest {
+    private final EasyRandom generator = new EasyRandom();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     @Autowired
     MockMvc mockMvc;
     @MockBean
     private ItemRequestService itemRequestService;
-    private final EasyRandom generator = new EasyRandom();
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void test_addItemRequest_whenArgumentsCorrect_shouldReturnStatus200AndJson() throws Exception {

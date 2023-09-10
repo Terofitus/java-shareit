@@ -102,7 +102,7 @@ class BookingRepositoryTest {
         List<Booking> bookings = bookingRepository.getAllBookingsByBookerId(1,
                 PageableCreator.toPageable(0, 20, Sort.by("start").descending()));
 
-        assertEquals( 1, bookings.size(), "Размер возвращенного списка бронирований не равен 1");
+        assertEquals(1, bookings.size(), "Размер возвращенного списка бронирований не равен 1");
     }
 
     @Test
